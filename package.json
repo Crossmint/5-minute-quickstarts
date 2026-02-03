@@ -1,0 +1,25 @@
+{
+  "name": "5-minute-quickstarts",
+  "private": true,
+  "pnpm": {
+    "onlyBuiltDependencies": ["keytar", "sharp", "esbuild"]
+  },
+  "scripts": {
+    "dev": "pnpm --filter",
+    "build": "pnpm --filter",
+    "sync-docs": "node scripts/sync-to-docs.mjs"
+  },
+  "dependencies": {
+    "@crossmint/client-sdk-react-ui": "^2.6.16",
+    "next": "^16.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@crossmint/cli": "^1.1.12",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "wallets-react": {
+    "name": "Crossmint Wallets - React",
+    "runtime": "node",
+    "envVars": {
+      "client": "NEXT_PUBLIC_CROSSMINT_API_KEY"
+    }
+  }
+}
