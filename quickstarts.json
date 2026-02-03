@@ -4,6 +4,7 @@
     "runtime": "node",
     "envVars": {
       "client": "NEXT_PUBLIC_CROSSMINT_API_KEY"
-    }
+    },
+    "docs": "apps/wallets-react/docs.mdx"
   }
 }
