@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "pnpm --filter",
     "build": "pnpm --filter",
-    "sync-docs": "node scripts/sync-to-docs.mjs"
+    "sync-readmes": "node scripts/sync-readmes.mjs"
   },
   "dependencies": {
     "@crossmint/client-sdk-react-ui": "^2.6.16",

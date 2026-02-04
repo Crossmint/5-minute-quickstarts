@@ -1,0 +1,245 @@
+---
+title: "React"
+description: "Create user wallets from your frontend in under 5 minutes"
+---
+
+{/* AUTO-GENERATED FROM _meta.json AND snippets/ - DO NOT EDIT MANUALLY */}
+
+## Prerequisites
+
+- Node.js 18+
+
+<Note>
+This quickstart uses Next.js, but the same patterns work with any React setup.
+</Note>
+
+## Quick Setup
+
+<Steps>
+  <Step title="Clone and run">
+    ```bash
+    git clone https://github.com/Crossmint/5-minute-quickstarts
+    cd 5-minute-quickstarts
+    ./setup.sh wallets-react
+    ```
+  </Step>
+  <Step title="Follow the prompts">
+    The setup script installs dependencies, prompts for your API key (or [create one here](https://staging.crossmint.com/console)), and starts the dev server.
+  </Step>
+</Steps>
+
+## How It Works
+
+This quickstart uses `@crossmint/client-sdk-react-ui` to integrate Crossmint wallets into a React app. The `CrossmintProvider` component wraps your app and manages API authentication. `CrossmintAuthProvider` handles user login, while `CrossmintWalletProvider` automatically creates a wallet when users sign in. The `useAuth` and `useWallet` hooks provide access to authentication state and wallet operations.
+
+## Code Walkthrough
+
+### Configure the Providers
+
+Wrap your app with Crossmint providers to enable authentication and wallet creation.
+
+```tsx title="provider-setup.tsx"
+"use client";
+
+import {
+  CrossmintProvider,
+  CrossmintAuthProvider,
+  CrossmintWalletProvider,
+} from "@crossmint/client-sdk-react-ui";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <CrossmintProvider apiKey={process.env.NEXT_PUBLIC_CROSSMINT_API_KEY!}>
+      <CrossmintAuthProvider>
+        <CrossmintWalletProvider
+          createOnLogin={{
+            chain: "base-sepolia",
+            signer: { type: "email" },
+          }}
+        >
+          {children}
+        </CrossmintWalletProvider>
+      </CrossmintAuthProvider>
+    </CrossmintProvider>
+  );
+}
+```
+
+<Accordion title="What's happening here?">
+The `CrossmintProvider` initializes the SDK with your API key. `CrossmintAuthProvider` manages user sessions. `CrossmintWalletProvider` with `createOnLogin` automatically creates a wallet on Base Sepolia when users authenticate.
+</Accordion>
+
+### Add Authentication
+
+The `useAuth` hook provides `login`, `logout`, and the current `user` state.
+
+```tsx title="auth-button.tsx"
+"use client";
+
+import { useAuth } from "@crossmint/client-sdk-react-ui";
+
+export function AuthButton() {
+  const { login, logout, user } = useAuth();
+
+  if (user) {
+    return (
+      <button onClick={logout}>
+        Log out
+      </button>
+    );
+  }
+
+  return (
+    <button onClick={login}>
+      Sign In
+    </button>
+  );
+}
+```
+
+<Accordion title="What's happening here?">
+Calling `login()` opens the Crossmint authentication modal. Users can sign in with email or social providers. Once authenticated, `user` contains their email and account details.
+</Accordion>
+
+### Display Wallet Info
+
+The `useWallet` hook returns the connected `wallet` and its creation `status`.
+
+```tsx title="wallet-display.tsx"
+"use client";
+
+import { useWallet } from "@crossmint/client-sdk-react-ui";
+
+export function WalletDisplay() {
+  const { wallet, status } = useWallet();
+
+  if (status === "in-progress") {
+    return <p>Creating wallet...</p>;
+  }
+
+  if (!wallet) {
+    return <p>No wallet connected</p>;
+  }
+
+  return (
+    <div>
+      <div>
+        <span>Address</span>
+        <span>{wallet.address}</span>
+      </div>
+      <div>
+        <span>Owner</span>
+        <span>{wallet?.owner ?? "—"}</span>
+      </div>
+      <div>
+        <span>Chain</span>
+        <span>{wallet.chain}</span>
+      </div>
+    </div>
+  );
+}
+```
+
+### Check and Fund Balance
+
+Use `wallet.balances()` to fetch token balances and `wallet.stagingFund()` to add testnet tokens.
+
+```tsx title="balance-card.tsx"
+"use client";
+
+import { useWallet } from "@crossmint/client-sdk-react-ui";
+import { useState } from "react";
+
+export function BalanceCard() {
+  const { wallet } = useWallet();
+  const [balance, setBalance] = useState<string | null>(null);
+
+  const refreshBalance = async () => {
+    if (!wallet) return;
+    const balances = await wallet.balances(["usdxm"]);
+    const token = balances.tokens.find((t) => t.symbol === "usdxm");
+    setBalance(token?.amount ?? "0");
+  };
+
+  const handleFund = async () => {
+    if (!wallet) return;
+    await wallet.stagingFund(10);
+    await refreshBalance();
+  };
+
+  return (
+    <div>
+      <p>USDXM Balance</p>
+      <p>${balance ?? "—"}</p>
+      <div>
+        <button onClick={handleFund}>
+          Add funds
+        </button>
+        <button onClick={refreshBalance}>
+          Refresh
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+### Transfer Tokens
+
+Use `wallet.send()` to transfer tokens to another address.
+
+```tsx title="transfer-form.tsx"
+"use client";
+
+import { useWallet } from "@crossmint/client-sdk-react-ui";
+import { useState } from "react";
+
+export function TransferForm() {
+  const { wallet } = useWallet();
+  const [recipient, setRecipient] = useState("");
+  const [amount, setAmount] = useState("");
+  const [txExplorerLink, setTxExplorerLink] = useState("");
+
+  const handleTransfer = async () => {
+    if (!wallet || !recipient || !amount) return;
+    const { explorerLink } = await wallet.send(recipient, "usdxm", amount);
+    setTxExplorerLink(explorerLink);
+    setRecipient("");
+    setAmount("");
+  };
+
+  return (
+    <div>
+      <p>Transfer Funds</p>
+      <input
+        placeholder="Recipient address"
+        value={recipient}
+        onChange={(e) => setRecipient(e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder="Amount"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+      />
+      <button
+        onClick={handleTransfer}
+        disabled={!recipient || !amount}
+      >
+        Transfer
+      </button>
+      {txExplorerLink && (
+        <a href={txExplorerLink} target="_blank" rel="noopener noreferrer">
+          View transaction
+        </a>
+      )}
+    </div>
+  );
+}
+```
+
+## Next Steps
+
+<Card title="View Source" icon="github" href="https://github.com/Crossmint/5-minute-quickstarts/tree/main/apps/wallets-react">
+  See the full quickstart code
+</Card>

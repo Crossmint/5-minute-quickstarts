@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Providers } from "./providers";
+import { Providers } from "../../snippets/01-provider-setup";
 
 export const metadata: Metadata = {
   title: "Crossmint Wallets - React Quickstart",
-  description: "Add Crossmint wallets to your React app in under 5 minutes",
+  description: "Create user wallets from your frontend in under 5 minutes",
 };
 
 export default function RootLayout({
