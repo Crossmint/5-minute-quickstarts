@@ -298,6 +298,32 @@ All text in `_meta.json` and `README.mdx` must follow these rules:
 
 ---
 
+## quickstarts.json
+
+Every quickstart must be registered in `quickstarts.json` at the project root. This file is used by `setup.sh` to configure API keys and start the app.
+
+```json
+{
+  "wallets-react": {
+    "name": "Crossmint Wallets - React",
+    "runtime": "node",
+    "envVars": {
+      "client": "NEXT_PUBLIC_CROSSMINT_API_KEY"
+    }
+  }
+}
+```
+
+| Field | Description |
+| --- | --- |
+| key | Matches the folder name in `apps/` exactly |
+| `name` | Human-readable display name |
+| `runtime` | `"node"` for JS/TS quickstarts |
+| `envVars.client` | Client-side API key variable name (if applicable) |
+| `envVars.server` | Server-side API key variable name (if applicable) |
+
+---
+
 ## Quality Checklist
 
 Before a quickstart is considered complete:
@@ -305,6 +331,7 @@ Before a quickstart is considered complete:
 - [ ] All snippet files are valid and importable
 - [ ] `src/` imports from `snippets/` (app must use the snippet code)
 - [ ] Running `./setup.sh {id}` successfully starts the app
+- [ ] `quickstarts.json` includes an entry for this quickstart
 - [ ] `_meta.json` includes all required fields
 - [ ] `framework` is display name only ("React", not "Crossmint React Quickstart")
 - [ ] `description` is action-oriented and under 80 characters
