@@ -5,5 +5,12 @@
     "envVars": {
       "client": "NEXT_PUBLIC_CROSSMINT_API_KEY"
     }
+  },
+  "wallets-react-native": {
+    "name": "Crossmint Wallets - React Native",
+    "runtime": "node",
+    "envVars": {
+      "client": "EXPO_PUBLIC_CROSSMINT_API_KEY"
+    }
   }
 }

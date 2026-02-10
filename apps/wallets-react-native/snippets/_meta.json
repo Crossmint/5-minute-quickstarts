@@ -1,0 +1,36 @@
+{
+  "id": "wallets-react-native",
+  "framework": "React Native",
+  "description": "Create user wallets from your mobile app in under 5 minutes",
+  "note": "This quickstart uses Expo for easier setup.",
+  "howItWorks": "This quickstart uses `@crossmint/client-sdk-react-native-ui` to integrate Crossmint wallets into a React Native app. The `CrossmintProvider` component wraps your app and manages API authentication. `CrossmintAuthProvider` handles headless user login via email OTP, while `CrossmintWalletProvider` automatically creates a wallet when users sign in. The `useCrossmintAuth` and `useWallet` hooks provide access to authentication state and wallet operations.",
+  "snippets": [
+    {
+      "file": "01-provider-setup.tsx",
+      "title": "Configure the Providers",
+      "description": "Wrap your app with Crossmint providers to enable authentication and wallet creation.",
+      "accordion": "The `CrossmintProvider` initializes the SDK with your API key. `CrossmintAuthProvider` manages user sessions with headless authentication. `CrossmintWalletProvider` with `createOnLogin` automatically creates a wallet on Base Sepolia when users authenticate."
+    },
+    {
+      "file": "02-login-screen.tsx",
+      "title": "Add Authentication",
+      "description": "The `useCrossmintAuth` hook provides headless email OTP authentication for React Native.",
+      "accordion": "Crossmint Auth in React Native is headless, so you implement your own login UI. Call `crossmintAuth.sendEmailOtp()` to send a verification code, then `crossmintAuth.confirmEmailOtp()` to verify it. Pass the resulting secret to `createAuthSession()` to complete login."
+    },
+    {
+      "file": "03-wallet-display.tsx",
+      "title": "Display Wallet Info",
+      "description": "The `useWallet` hook returns the connected `wallet` and its creation `status`."
+    },
+    {
+      "file": "04-balance-card.tsx",
+      "title": "Check and Fund Balance",
+      "description": "Use `wallet.balances()` to fetch token balances and `wallet.stagingFund()` to add testnet tokens."
+    },
+    {
+      "file": "05-transfer-form.tsx",
+      "title": "Transfer Tokens",
+      "description": "Use `wallet.send()` to transfer tokens to another address."
+    }
+  ]
+}
