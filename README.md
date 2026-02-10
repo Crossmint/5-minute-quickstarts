@@ -14,6 +14,6 @@ Runnable code examples for Crossmint products.
 pnpm run sync-readmes        # Regenerate all README.mdx from snippets
 ```
 
-## Docs
+## Contributing
 
-See [GENERATION_GUIDE.md](GENERATION_GUIDE.md) for creating quickstarts.
+See [AGENTS.md](AGENTS.md) for the quickstart generation guide used by AI agents.
