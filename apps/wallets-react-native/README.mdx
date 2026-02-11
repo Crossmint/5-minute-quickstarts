@@ -58,6 +58,7 @@ export function Providers({ children }: ProvidersProps) {
             chain: "base-sepolia",
             signer: { type: "email" },
           }}
+          headlessSigningFlow={false}
         >
           {children}
         </CrossmintWalletProvider>
@@ -99,10 +100,9 @@ export function LoginScreen() {
   };
 
   return (
-    <View style={{ padding: 20, justifyContent: "center", flex: 1 }}>
-      <Text style={{ fontSize: 24, marginBottom: 20, textAlign: "center" }}>Sign In</Text>
+    <View>
+      <Text>Sign In</Text>
       <TextInput
-        style={{ borderWidth: 1, borderColor: "#ccc", padding: 12, marginBottom: 12, borderRadius: 8 }}
         placeholder="Email address"
         value={email}
         onChangeText={setEmail}
@@ -112,25 +112,22 @@ export function LoginScreen() {
       />
       {!otpSent ? (
         <TouchableOpacity
-          style={{ backgroundColor: "#13b601", padding: 14, borderRadius: 8, alignItems: "center" }}
           onPress={sendOtp}
         >
-          <Text style={{ color: "#fff", fontWeight: "600" }}>Send Code</Text>
+          <Text>Send Code</Text>
         </TouchableOpacity>
       ) : (
         <>
           <TextInput
-            style={{ borderWidth: 1, borderColor: "#ccc", padding: 12, marginBottom: 12, borderRadius: 8 }}
             placeholder="Enter verification code"
             value={otp}
             onChangeText={setOtp}
             keyboardType="number-pad"
           />
           <TouchableOpacity
-            style={{ backgroundColor: "#13b601", padding: 14, borderRadius: 8, alignItems: "center" }}
             onPress={verifyOtp}
           >
-            <Text style={{ color: "#fff", fontWeight: "600" }}>Verify</Text>
+            <Text>Verify</Text>
           </TouchableOpacity>
         </>
       )}
@@ -155,22 +152,22 @@ export function WalletDisplay() {
   const { wallet, status } = useWallet();
 
   if (status === "in-progress") {
-    return <Text style={{ color: "#6B7280" }}>Creating wallet...</Text>;
+    return <Text>Creating wallet...</Text>;
   }
 
   if (!wallet) {
-    return <Text style={{ color: "#6B7280" }}>No wallet connected</Text>;
+    return <Text>No wallet connected</Text>;
   }
 
   return (
-    <View style={{ gap: 8 }}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={{ color: "#6B7280" }}>Address</Text>
-        <Text style={{ fontWeight: "500" }}>{wallet.address}</Text>
+    <View>
+      <View>
+        <Text>Address</Text>
+        <Text>{`${wallet.address.slice(0, 6)}...${wallet.address.slice(-6)}`}</Text>
       </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={{ color: "#6B7280" }}>Chain</Text>
-        <Text style={{ fontWeight: "500" }}>{wallet.chain}</Text>
+      <View>
+        <Text>Chain</Text>
+        <Text>{wallet.chain}</Text>
       </View>
     </View>
   );
@@ -204,21 +201,19 @@ export function BalanceCard() {
   };
 
   return (
-    <View style={{ backgroundColor: "#F7F8FA", borderRadius: 12, padding: 16 }}>
-      <Text style={{ fontSize: 12, color: "#6B7280", textTransform: "uppercase" }}>USDXM Balance</Text>
-      <Text style={{ fontSize: 32, fontWeight: "600", marginVertical: 8 }}>${balance ?? "—"}</Text>
-      <View style={{ flexDirection: "row", gap: 8 }}>
+    <View>
+      <Text>USDXM Balance</Text>
+      <Text>${balance ?? "—"}</Text>
+      <View>
         <TouchableOpacity
-          style={{ backgroundColor: "#13b601", padding: 10, borderRadius: 8, flex: 1, alignItems: "center" }}
           onPress={handleFund}
         >
-          <Text style={{ color: "#fff", fontWeight: "500" }}>Add Funds</Text>
+          <Text>Add Funds</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={{ backgroundColor: "#fff", padding: 10, borderRadius: 8, flex: 1, alignItems: "center", borderWidth: 1, borderColor: "#E5E7EB" }}
           onPress={refreshBalance}
         >
-          <Text style={{ fontWeight: "500" }}>Refresh</Text>
+          <Text>Refresh</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -250,32 +245,29 @@ export function TransferForm() {
   };
 
   return (
-    <View style={{ backgroundColor: "#F7F8FA", borderRadius: 12, padding: 16 }}>
-      <Text style={{ fontSize: 12, color: "#6B7280", textTransform: "uppercase" }}>Transfer Funds</Text>
+    <View>
+      <Text>Transfer Funds</Text>
       <TextInput
-        style={{ borderWidth: 1, borderColor: "#E5E7EB", padding: 12, borderRadius: 8, marginTop: 8, backgroundColor: "#fff" }}
         placeholder="Recipient address"
         value={recipient}
         onChangeText={setRecipient}
         autoCapitalize="none"
       />
       <TextInput
-        style={{ borderWidth: 1, borderColor: "#E5E7EB", padding: 12, borderRadius: 8, marginTop: 8, backgroundColor: "#fff" }}
         placeholder="Amount"
         value={amount}
         onChangeText={setAmount}
         keyboardType="numeric"
       />
       <TouchableOpacity
-        style={{ backgroundColor: "#13b601", padding: 14, borderRadius: 8, alignItems: "center", marginTop: 12, opacity: !recipient || !amount ? 0.5 : 1 }}
         onPress={handleTransfer}
         disabled={!recipient || !amount}
       >
-        <Text style={{ color: "#fff", fontWeight: "500" }}>Transfer</Text>
+        <Text>Transfer</Text>
       </TouchableOpacity>
       {txLink ? (
-        <TouchableOpacity onPress={() => Linking.openURL(txLink)} style={{ marginTop: 8 }}>
-          <Text style={{ color: "#13b601" }}>View transaction</Text>
+        <TouchableOpacity onPress={() => Linking.openURL(txLink)}>
+          <Text>View transaction</Text>
         </TouchableOpacity>
       ) : null}
     </View>

@@ -17,6 +17,7 @@ export function Providers({ children }: ProvidersProps) {
             chain: "base-sepolia",
             signer: { type: "email" },
           }}
+          headlessSigningFlow={false}
         >
           {children}
         </CrossmintWalletProvider>

@@ -16,7 +16,7 @@ export function WalletDisplay() {
     <View style={{ gap: 8 }}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={{ color: "#6B7280" }}>Address</Text>
-        <Text style={{ fontWeight: "500" }}>{wallet.address}</Text>
+        <Text style={{ fontWeight: "500" }}>{`${wallet.address.slice(0, 6)}...${wallet.address.slice(-6)}`}</Text>
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={{ color: "#6B7280" }}>Chain</Text>

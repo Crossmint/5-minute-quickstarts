@@ -10,6 +10,7 @@ This guide instructs AI agents on generating consistent, well-structured quickst
 2. **If it runs, it's correct** - Snippets are imported by the actual app, so a working quickstart = valid snippets
 3. **Deterministic docs** - AI decides nothing about how snippets render; `_meta.json` controls everything
 4. **Single source of truth** - The `README.mdx` in each quickstart IS the documentation page
+5. **Always use latest packages** - Before creating or updating a quickstart, check the latest published versions of all dependencies (especially `@crossmint/*` packages) using `npm show <package> version` and use those exact versions in `package.json`. Never copy dependency versions from existing quickstarts without verifying they are current
 
 ---
 
@@ -73,7 +74,7 @@ Each snippet file must:
 
 - Be a valid, importable/runnable module
 - Focus on ONE concept only
-- Be under 30 lines (aim for 10-20)
+- Be under 30 lines (aim for 10-20). Exception: headless auth flows (e.g., React Native email OTP) that cannot be meaningfully split may exceed this limit
 - Include only necessary imports at the top
 - Export named exports for easy importing
 
@@ -89,20 +90,11 @@ Each snippet file must:
 
 ### Styling
 
-Use the shared CSS design system (`shared/styles.css`) for all quickstarts. When rendered in docs, all `className` and `style` attributes are automatically stripped, so styling only affects the running quickstart app.
-
-**Why plain CSS over Tailwind:**
-
-- **Cleaner snippets** - `className="qs-btn"` keeps focus on Crossmint concepts, not styling
-- **Cross-platform** - Same approach works for React, React Native, and can adapt for native platforms
-- **Consistency** - One design system ensures all quickstarts look unified
-
-**Rules:**
+**Web (React, Node.js):** Use the shared CSS design system (`shared/styles.css`). When rendered in docs, all `className` and `style` attributes are automatically stripped.
 
 - Import `shared/styles.css` in your app's global CSS file
 - Use semantic class names prefixed with `qs-` (e.g., `qs-btn`, `qs-card`, `qs-input`)
 - Do not use Tailwind, CSS modules, styled-components, or other CSS frameworks
-- Code must still make sense after styles are removed
 
 **Common classes:**
 
@@ -115,6 +107,17 @@ Use the shared CSS design system (`shared/styles.css`) for all quickstarts. When
 | Forms | `qs-input` |
 | Utilities | `qs-mt-sm`, `qs-mt-md`, `qs-mb-lg`, `qs-flex`, `qs-grid` |
 
+**React Native:** CSS is not supported. Use inline styles or `StyleSheet.create()` matching the design tokens from `shared/styles.css`:
+
+| Token | Value |
+|-------|-------|
+| Primary green | `#13b601` |
+| Text primary | `#0f172a` |
+| Text muted | `#6B7280` |
+| Background | `#F7F8FA` |
+| Border | `#E5E7EB` |
+| Border radius | `8` (buttons), `12` (cards) |
+
 ### Integration Requirement
 
 **Critical:** The quickstart's `src/` directory MUST import from `snippets/`. This ensures snippets are tested when the quickstart runs.
@@ -126,6 +129,19 @@ import { Providers } from "../snippets/01-provider-setup";
 // src/app/page.tsx
 import { WalletDisplay } from "../snippets/03-wallet-display";
 ```
+
+---
+
+## React Native (Expo) Quickstarts
+
+Copy `apps/wallets-react-native/` as your starting point. It contains all required config files (`index.js`, `metro.config.js`, `utils/polyfills.ts`, `app.json`, `tsconfig.json`) and known-good dependency versions. Match its structure exactly — only change the snippets and `_meta.json`.
+
+Key differences from web quickstarts:
+
+- **Styling** — use inline styles or `StyleSheet.create()` (CSS is not supported in React Native)
+- **Auth** — supports both headed and headless flows. Set `headlessSigningFlow={false}` on `CrossmintWalletProvider` for built-in signing UI
+- **Entry point** — use `"main": "index.js"` with `registerRootComponent`, not `expo/AppEntry` (breaks in monorepos)
+- **Monorepo** — do not introduce new React or Metro versions. The root `pnpm.overrides` pins these for compatibility
 
 ---
 
@@ -339,6 +355,10 @@ Before a quickstart is considered complete:
 - [ ] `accordion` only exists on complex snippets
 - [ ] `README.mdx` follows the template exactly
 - [ ] All text follows style rules (American English, active voice, no contractions)
+- [ ] All dependency versions are the latest published (`npm show <pkg> version`)
+- [ ] `pnpm install` from root succeeds without errors
+- [ ] (React Native) `metro.config.js`, `utils/polyfills.ts`, and `index.js` are present
+- [ ] (React Native) App launches in iOS/Android simulator without crashes
 
 ---
 

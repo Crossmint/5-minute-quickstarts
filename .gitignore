@@ -10,6 +10,9 @@ node_modules/
 dist/
 build/
 .next/
+.expo/
+ios/
+android/
 *.tsbuildinfo
 
 # IDE

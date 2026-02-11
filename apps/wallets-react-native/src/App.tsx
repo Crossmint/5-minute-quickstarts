@@ -1,3 +1,4 @@
+import "../utils/polyfills";
 import { SafeAreaView, View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useCrossmintAuth, useWallet } from "@crossmint/client-sdk-react-native-ui";
 import { Providers } from "../snippets/01-provider-setup";
