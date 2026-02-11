@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "wallets-react-native",
+    "slug": "wallets-react-native",
+    "version": "1.0.0",
+    "scheme": "crossmint-wallets",
+    "newArchEnabled": true,
+    "platforms": ["ios", "android"],
+    "plugins": [
+      "@crossmint/client-sdk-react-native-ui"
+    ]
+  }
+}

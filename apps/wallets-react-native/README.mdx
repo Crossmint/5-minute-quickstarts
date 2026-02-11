@@ -1,0 +1,282 @@
+---
+title: "React Native"
+description: "Create user wallets from your mobile app in under 5 minutes"
+---
+
+{/* AUTO-GENERATED FROM _meta.json AND snippets/ - DO NOT EDIT MANUALLY */}
+
+## Prerequisites
+
+- Node.js 18+
+
+<Note>
+This quickstart uses Expo for easier setup.
+</Note>
+
+## Quick Setup
+
+<Steps>
+  <Step title="Clone and run">
+    ```bash
+    git clone https://github.com/Crossmint/5-minute-quickstarts
+    cd 5-minute-quickstarts
+    ./setup.sh wallets-react-native
+    ```
+  </Step>
+  <Step title="Follow the prompts">
+    The setup script installs dependencies, prompts for your API key (or [create one here](https://staging.crossmint.com/console)), and starts the dev server.
+  </Step>
+</Steps>
+
+## How It Works
+
+This quickstart uses `@crossmint/client-sdk-react-native-ui` to integrate Crossmint wallets into a React Native app. The `CrossmintProvider` component wraps your app and manages API authentication. `CrossmintAuthProvider` handles headless user login via email OTP, while `CrossmintWalletProvider` automatically creates a wallet when users sign in. The `useCrossmintAuth` and `useWallet` hooks provide access to authentication state and wallet operations.
+
+## Code Walkthrough
+
+### Configure the Providers
+
+Wrap your app with Crossmint providers to enable authentication and wallet creation.
+
+```tsx title="provider-setup.tsx"
+import {
+  CrossmintProvider,
+  CrossmintAuthProvider,
+  CrossmintWalletProvider,
+} from "@crossmint/client-sdk-react-native-ui";
+
+type ProvidersProps = {
+  children: React.ReactNode;
+};
+
+export function Providers({ children }: ProvidersProps) {
+  return (
+    <CrossmintProvider apiKey={process.env.EXPO_PUBLIC_CROSSMINT_API_KEY!}>
+      <CrossmintAuthProvider>
+        <CrossmintWalletProvider
+          createOnLogin={{
+            chain: "base-sepolia",
+            signer: { type: "email" },
+          }}
+          headlessSigningFlow={false}
+        >
+          {children}
+        </CrossmintWalletProvider>
+      </CrossmintAuthProvider>
+    </CrossmintProvider>
+  );
+}
+```
+
+<Accordion title="What's happening here?">
+The `CrossmintProvider` initializes the SDK with your API key. `CrossmintAuthProvider` manages user sessions with headless authentication. `CrossmintWalletProvider` with `createOnLogin` automatically creates a wallet on Base Sepolia when users authenticate.
+</Accordion>
+
+### Add Authentication
+
+The `useCrossmintAuth` hook provides headless email OTP authentication for React Native.
+
+```tsx title="login-screen.tsx"
+import { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { useCrossmintAuth } from "@crossmint/client-sdk-react-native-ui";
+
+export function LoginScreen() {
+  const { crossmintAuth, createAuthSession } = useCrossmintAuth();
+  const [email, setEmail] = useState("");
+  const [emailId, setEmailId] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+
+  const sendOtp = async () => {
+    const res = await crossmintAuth?.sendEmailOtp(email);
+    setEmailId(res.emailId);
+    setOtpSent(true);
+  };
+
+  const verifyOtp = async () => {
+    const secret = await crossmintAuth?.confirmEmailOtp(email, emailId, otp);
+    await createAuthSession(secret);
+  };
+
+  return (
+    <View>
+      <Text>Sign In</Text>
+      <TextInput
+        placeholder="Email address"
+        value={email}
+        onChangeText={setEmail}
+        editable={!otpSent}
+        autoCapitalize="none"
+        keyboardType="email-address"
+      />
+      {!otpSent ? (
+        <TouchableOpacity
+          onPress={sendOtp}
+        >
+          <Text>Send Code</Text>
+        </TouchableOpacity>
+      ) : (
+        <>
+          <TextInput
+            placeholder="Enter verification code"
+            value={otp}
+            onChangeText={setOtp}
+            keyboardType="number-pad"
+          />
+          <TouchableOpacity
+            onPress={verifyOtp}
+          >
+            <Text>Verify</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
+  );
+}
+```
+
+<Accordion title="What's happening here?">
+Crossmint Auth in React Native is headless, so you implement your own login UI. Call `crossmintAuth.sendEmailOtp()` to send a verification code, then `crossmintAuth.confirmEmailOtp()` to verify it. Pass the resulting secret to `createAuthSession()` to complete login.
+</Accordion>
+
+### Display Wallet Info
+
+The `useWallet` hook returns the connected `wallet` and its creation `status`.
+
+```tsx title="wallet-display.tsx"
+import { View, Text } from "react-native";
+import { useWallet } from "@crossmint/client-sdk-react-native-ui";
+
+export function WalletDisplay() {
+  const { wallet, status } = useWallet();
+
+  if (status === "in-progress") {
+    return <Text>Creating wallet...</Text>;
+  }
+
+  if (!wallet) {
+    return <Text>No wallet connected</Text>;
+  }
+
+  return (
+    <View>
+      <View>
+        <Text>Address</Text>
+        <Text>{`${wallet.address.slice(0, 6)}...${wallet.address.slice(-6)}`}</Text>
+      </View>
+      <View>
+        <Text>Chain</Text>
+        <Text>{wallet.chain}</Text>
+      </View>
+    </View>
+  );
+}
+```
+
+### Check and Fund Balance
+
+Use `wallet.balances()` to fetch token balances and `wallet.stagingFund()` to add testnet tokens.
+
+```tsx title="balance-card.tsx"
+import { useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useWallet } from "@crossmint/client-sdk-react-native-ui";
+
+export function BalanceCard() {
+  const { wallet } = useWallet();
+  const [balance, setBalance] = useState<string | null>(null);
+
+  const refreshBalance = async () => {
+    if (!wallet) return;
+    const balances = await wallet.balances(["usdxm"]);
+    const token = balances.tokens.find((t) => t.symbol === "usdxm");
+    setBalance(token?.amount ?? "0");
+  };
+
+  const handleFund = async () => {
+    if (!wallet) return;
+    await wallet.stagingFund(10);
+    await refreshBalance();
+  };
+
+  return (
+    <View>
+      <Text>USDXM Balance</Text>
+      <Text>${balance ?? "—"}</Text>
+      <View>
+        <TouchableOpacity
+          onPress={handleFund}
+        >
+          <Text>Add Funds</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={refreshBalance}
+        >
+          <Text>Refresh</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
+```
+
+### Transfer Tokens
+
+Use `wallet.send()` to transfer tokens to another address.
+
+```tsx title="transfer-form.tsx"
+import { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, Linking } from "react-native";
+import { useWallet } from "@crossmint/client-sdk-react-native-ui";
+
+export function TransferForm() {
+  const { wallet } = useWallet();
+  const [recipient, setRecipient] = useState("");
+  const [amount, setAmount] = useState("");
+  const [txLink, setTxLink] = useState("");
+
+  const handleTransfer = async () => {
+    if (!wallet || !recipient || !amount) return;
+    const { explorerLink } = await wallet.send(recipient, "usdxm", amount);
+    setTxLink(explorerLink);
+    setRecipient("");
+    setAmount("");
+  };
+
+  return (
+    <View>
+      <Text>Transfer Funds</Text>
+      <TextInput
+        placeholder="Recipient address"
+        value={recipient}
+        onChangeText={setRecipient}
+        autoCapitalize="none"
+      />
+      <TextInput
+        placeholder="Amount"
+        value={amount}
+        onChangeText={setAmount}
+        keyboardType="numeric"
+      />
+      <TouchableOpacity
+        onPress={handleTransfer}
+        disabled={!recipient || !amount}
+      >
+        <Text>Transfer</Text>
+      </TouchableOpacity>
+      {txLink ? (
+        <TouchableOpacity onPress={() => Linking.openURL(txLink)}>
+          <Text>View transaction</Text>
+        </TouchableOpacity>
+      ) : null}
+    </View>
+  );
+}
+```
+
+## Next Steps
+
+<Card title="View Source" icon="github" href="https://github.com/Crossmint/5-minute-quickstarts/tree/main/apps/wallets-react-native">
+  See the full quickstart code
+</Card>
