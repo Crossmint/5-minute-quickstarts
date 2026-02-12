@@ -5,9 +5,14 @@
     "version": "1.0.0",
     "scheme": "crossmint-wallets",
     "newArchEnabled": true,
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "plugins": [
-      "@crossmint/client-sdk-react-native-ui"
+      "@crossmint/client-sdk-react-native-ui",
+      "expo-secure-store",
+      "expo-web-browser"
     ]
   }
 }

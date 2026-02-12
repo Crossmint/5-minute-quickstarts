@@ -2,7 +2,7 @@
   "id": "wallets-react-native",
   "framework": "React Native",
   "description": "Create user wallets from your mobile app in under 5 minutes",
-  "note": "This quickstart uses Expo for easier setup.",
+  "note": "This quickstart uses Expo for easier setup. To run on a physical device, install [Expo Go](https://expo.dev/go) and scan the QR code shown in the terminal.",
   "howItWorks": "This quickstart uses `@crossmint/client-sdk-react-native-ui` to integrate Crossmint wallets into a React Native app. The `CrossmintProvider` component wraps your app and manages API authentication. `CrossmintAuthProvider` handles headless user login via email OTP, while `CrossmintWalletProvider` automatically creates a wallet when users sign in. The `useCrossmintAuth` and `useWallet` hooks provide access to authentication state and wallet operations.",
   "snippets": [
     {

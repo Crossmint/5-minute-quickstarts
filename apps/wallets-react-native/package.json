@@ -11,31 +11,31 @@
   "dependencies": {
     "@crossmint/client-sdk-react-native-ui": "0.13.18",
     "buffer": "^6.0.3",
-    "expo": "~53.0.10",
-    "expo-constants": "~17.1.6",
-    "expo-device": "^7.1.4",
-    "expo-linking": "~7.1.5",
-    "expo-secure-store": "^14.2.3",
-    "expo-web-browser": "~14.1.6",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
-    "react-native": "0.79.3",
+    "expo": "~54.0.33",
+    "expo-constants": "~18.0.13",
+    "expo-device": "^8.0.10",
+    "expo-linking": "~8.0.11",
+    "expo-secure-store": "^15.0.8",
+    "expo-web-browser": "~15.0.10",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
     "react-native-get-random-values": "^1.11.0",
-    "react-native-safe-area-context": "5.4.0",
-    "react-native-screens": "~4.11.1",
-    "react-native-svg": "15.8.0",
-    "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5",
+    "react-native-safe-area-context": "5.6.2",
+    "react-native-screens": "~4.16.0",
+    "react-native-svg": "15.12.1",
+    "react-native-web": "~0.21.2",
+    "react-native-webview": "13.15.0",
     "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
-    "@types/react": "~19.0.10",
+    "@types/react": "~19.1.17",
     "typescript": "^5.8.2"
   },
   "pnpm": {
     "overrides": {
-      "react-native-webview": "13.13.5"
+      "react-native-webview": "13.15.0"
     }
   }
 }
