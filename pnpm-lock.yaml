@@ -26,8 +26,8 @@ importers:
         version: 19.1.0(react@19.1.0)
     devDependencies:
       '@crossmint/cli':
-        specifier: ^1.1.12
-        version: 1.1.12(@types/node@22.19.7)
+        specifier: ^1.2.0
+        version: 1.2.0(@types/node@22.19.7)
       '@types/node':
         specifier: ^22.10.0
         version: 22.19.7
@@ -901,8 +901,8 @@ packages:
   '@coinbase/wallet-sdk@4.3.7':
     resolution: {integrity: sha512-z6e5XDw6EF06RqkeyEa+qD0dZ2ZbLci99vx3zwDY//XO8X7166tqKJrR2XlQnzVmtcUuJtCd5fCvr9Cu6zzX7w==}
 
-  '@crossmint/cli@1.1.12':
-    resolution: {integrity: sha512-lxt6Im85FpV2JHAeDKny6gLRDOIA13J6Tk5HHYj9bZhyS8tPej8LbXZKewY/oToklaPrnq07jlQeMxMarZArEw==}
+  '@crossmint/cli@1.2.0':
+    resolution: {integrity: sha512-g+xDN9NEW6dkMQp068kluEyTYSpcDUF6SH14r3mwNYcm3tVRO4As6h9gAaY03VtjDrDoums518x3+GBRfRK6MQ==}
     hasBin: true
 
   '@crossmint/client-sdk-auth@1.2.46':
@@ -7602,7 +7602,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@crossmint/cli@1.1.12(@types/node@22.19.7)':
+  '@crossmint/cli@1.2.0(@types/node@22.19.7)':
     dependencies:
       '@inquirer/prompts': 7.4.0(@types/node@22.19.7)
       chalk: 4.1.2
